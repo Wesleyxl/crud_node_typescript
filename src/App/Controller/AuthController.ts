@@ -77,9 +77,20 @@ class AuthController extends Controller {
   // me
   public async me(req: Request, res: Response) {
     try {
+      // get user using token access
+      const id = res.locals.auth_data.id;
+      const response = await AuthService.me(id);
+
+      if (!response.success) {
+        return res.status(401).json({
+          success: false,
+          message: response.message,
+        });
+      }
+
       return res.json({
         success: true,
-        data: "me",
+        data: response.data,
       });
     } catch (error) {
       return res.status(400).json({
